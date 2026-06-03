@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: telco-churn-challenge
+Version: 0.1.0
+Summary: Rede Neural para Previsão de Churn com Pipeline End-to-End
+Requires-Dist: pandas
+Requires-Dist: scikit-learn
+Requires-Dist: mlflow
+Requires-Dist: torch
+Requires-Dist: fastapi
+Requires-Dist: uvicorn
+Requires-Dist: pytest
+Requires-Dist: ruff
+Requires-Dist: pandera
