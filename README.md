@@ -1,3 +1,5 @@
+## Tech Challenge 1 - Mateus Munhoz. RA: RM375436 | Lucas Munhoz. RA: RM374691 | 
+
 <div align="center">
   
   # 📉 Telco Churn Prediction Pipeline
@@ -15,15 +17,15 @@
 
 ---
 
-## 🎯 O Business Case
+## O Business Case
 
 Uma operadora de telecomunicações está perdendo clientes em ritmo acelerado. Este projeto entrega um **modelo preditivo end-to-end** que classifica clientes com risco iminente de cancelamento (Churn), permitindo ações de retenção proativas e direcionadas.
 
-> 💡 **Foco Analítico:** A arquitetura e as métricas foram otimizadas para priorizar o *F1-Score*, mitigando **Falsos Negativos** (deixar um cliente cancelar sem intervir), o que representa o maior custo financeiro para a operação.
+> **Foco Analítico:** A arquitetura e as métricas foram otimizadas para priorizar o *F1-Score*, mitigando **Falsos Negativos** (deixar um cliente cancelar sem intervir), o que representa o maior custo financeiro para a operação.
 
 ---
 
-## 🛠️ Stack Tecnológico & Arquitetura
+## Stack Tecnológico & Arquitetura
 
 O projeto foi construído seguindo as melhores práticas de Engenharia de Software aplicadas a Machine Learning (MLOps).
 
@@ -37,7 +39,7 @@ O projeto foi construído seguindo as melhores práticas de Engenharia de Softwa
 
 ---
 
-## 📂 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```text
 telco-churn-challenge/
