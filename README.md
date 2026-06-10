@@ -1,5 +1,3 @@
-## Tech Challenge 1 - Mateus Munhoz. RA: RM375436 | Lucas Munhoz. RA: RM374691 | 
-
 <div align="center">
   
   # 📉 Telco Churn Prediction Pipeline
@@ -53,3 +51,5 @@ telco-churn-challenge/
 ├── .gitignore          # Regras de exclusão do repositório
 ├── pyproject.toml      # Configuração de dependências e regras do linter (Ruff)
 └── README.md           # Documentação central
+
+## Tech Challenge 1 - Mateus Munhoz. RA: RM375436 | Lucas Munhoz. RA: RM374691 |
