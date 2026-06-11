@@ -11,3 +11,8 @@ Requires-Dist: uvicorn
 Requires-Dist: pytest
 Requires-Dist: ruff
 Requires-Dist: pandera
+Requires-Dist: seaborn
+Requires-Dist: openpyxl
+Requires-Dist: matplotlib
+Requires-Dist: joblib
+Requires-Dist: pydantic
