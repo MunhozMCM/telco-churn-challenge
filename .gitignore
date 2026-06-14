@@ -1,5 +1,6 @@
 # Environments
 venv/
+.venv/
 .env
 
 # Python Cache
@@ -7,8 +8,11 @@ __pycache__/
 *.pyc
 
 # Data and Models
-data/
-models/
+/data/
+/models/
 
 # MLflow tracking
 mlruns/
+
+# Material explicativo Fase 1 pdf
+material-fiap/
