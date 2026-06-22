@@ -16,7 +16,9 @@ dependencies = [
     "openpyxl",
     "matplotlib",
     "joblib",
-    "pydantic"
+    "pydantic",
+    "shap",
+    "statsmodels"
 ]
 
 [tool.ruff]
