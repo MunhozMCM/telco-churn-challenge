@@ -2,15 +2,17 @@
   
   # 📉 Telco Churn Prediction Pipeline
   
-  **Rede Neural Multi-Layer Perceptron (MLP) com deploy em produção via API REST.**
+  **Pipeline de ML end-to-end para previsão de churn — baselines + Rede Neural (PyTorch), rastreados com MLflow e servidos via batch (Airflow) e API REST (FastAPI).**
   
   <p align="center">
     <img src="https://img.shields.io/badge/Python-3.10+-blue.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
     <img src="https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white" alt="PyTorch" />
-    <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=FastAPI&logoColor=white" alt="FastAPI" />
     <img src="https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="Scikit-Learn" />
+    <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=FastAPI&logoColor=white" alt="FastAPI" />
     <img src="https://img.shields.io/badge/MLflow-0194E2.svg?style=for-the-badge&logo=MLflow&logoColor=white" alt="MLflow" />
   </p>
+
+  <sub>Versão do modelo: <code>1.0.0</code> · ver <a href="src/version.py"><code>src/version.py</code></a></sub>
 </div>
 
 ---
@@ -19,21 +21,25 @@
 
 Uma operadora de telecomunicações está perdendo clientes em ritmo acelerado. Este projeto entrega um **modelo preditivo end-to-end** que classifica clientes com risco iminente de cancelamento (Churn), permitindo ações de retenção proativas e direcionadas.
 
-> **Foco Analítico:** A arquitetura e as métricas foram otimizadas para priorizar o *F1-Score*, mitigando **Falsos Negativos** (deixar um cliente cancelar sem intervir), o que representa o maior custo financeiro para a operação.
+> **Foco analítico:** o threshold de decisão foi reduzido para **0.3** para priorizar o *Recall*, mitigando **Falsos Negativos** (deixar um cliente cancelar sem intervir) — o maior custo financeiro da operação. Justificativa em [`notebooks/ML_experiments_decisions.md`](notebooks/ML_experiments_decisions.md).
+
+O modelo **servido em produção é a Regressão Logística** (interpretável, leve e empatada com o MLP nas métricas — ver [`notebooks/NN_MLP_experiments_decisions.md`](notebooks/NN_MLP_experiments_decisions.md)). O MLP é treinado e rastreado no MLflow para comparação.
 
 ---
 
-## Stack Tecnológico & Arquitetura
-
-O projeto foi construído seguindo as melhores práticas de Engenharia de Software aplicadas a Machine Learning (MLOps).
+## Stack & Arquitetura
 
 | Componente | Tecnologia | Propósito |
 | :--- | :--- | :--- |
-| **Deep Learning** | `PyTorch` | Construção do MLP customizado com *Early Stopping*. |
-| **Baselines & Pipelines** | `Scikit-Learn` | Modelos lineares de comparação e padronização de features (`StandardScaler`). |
-| **Tracking & Registro** | `MLflow` | Versionamento de parâmetros, métricas e modelos. |
-| **Inference API** | `FastAPI` | Deploy do modelo com endpoints assíncronos e validação de schema. |
-| **Data Validation** | `Pydantic` | Tipagem estática rigorosa para os payloads da API. |
+| **Pipeline reproduzível** | `scikit-learn` | `ColumnTransformer` (OneHotEncoder + StandardScaler) + transformer custom, num único artefato sem *data leakage*. |
+| **Rede Neural** | `PyTorch` | MLP (64→32) com *early stopping*, comparada aos baselines. |
+| **Tracking** | `MLflow` | Parâmetros, métricas e artefatos dos 3 modelos (backend sqlite). |
+| **Validação de dados** | `pandera` | Contrato do dataset (batch/treino). |
+| **API de inferência** | `FastAPI` + `Pydantic` | `/predict` e `/health`, validação de contrato, logging estruturado, middleware de latência. |
+| **Deploy batch** | `Airflow` | Job diário que escora a base inteira (arquitetura primária). |
+| **Tooling** | `ruff`, `taskipy`, `Makefile`, `pytest` | Lint, formatação, atalhos e testes. |
+
+Decisão de deploy (batch × real-time) documentada em [`docs/deployment_architecture.md`](docs/deployment_architecture.md).
 
 ---
 
@@ -41,18 +47,22 @@ O projeto foi construído seguindo as melhores práticas de Engenharia de Softwa
 
 ```text
 telco-churn-challenge/
-├── data/               # Dataset original da IBM (ignorado pelo git)
-├── docs/               # Model Card documentando vieses e limitações
-├── mlruns/             # Histórico de rastreamento local (MLflow)
-├── models/             # Artefatos serilizados (.pth e .pkl)
-├── notebooks/          # Exploração (EDA) e experimentação da Rede Neural
+├── data/raw/              # Dataset IBM + metadata.md (imutável)
+├── dags/                  # Airflow DAG do scoring diário
+├── docs/                  # Model Card + arquitetura de deploy
+├── notebooks/             # EDA, baselines (ML) e Rede Neural (NN) — logam no MLflow
 ├── src/
-│   └── api.py          # Código-fonte da aplicação FastAPI
-├── .gitignore          # Regras de exclusão do repositório
-├── pyproject.toml      # Configuração de dependências e regras do linter (Ruff)
-└── README.md           # Documentação central
+│   ├── config.py          # Constantes, features, threshold, MLflow
+│   ├── version.py         # MODEL_VERSION (semver)
+│   ├── data/              # io.py (load/save) · schema.py (pandera)
+│   ├── modeling/          # preprocessing · pipeline · neural_net · metrics · train
+│   ├── api/               # app · schemas · service · middleware · entry
+│   └── batch/             # score.py (job de scoring em lote)
+├── tests/                 # unit · schema · smoke · api
+├── Makefile · pyproject.toml
+```
 
-## Tech Challenge 1 - Mateus Munhoz. RA: RM375436 | Lucas Munhoz. RA: RM374691 |
+## Tech Challenge 1 - Mateus Munhoz. RA: RM375436 | Lucas Munhoz. RA: RM374691 | Gabriel Figueira (RM374505)
 
 ---
 
@@ -61,33 +71,43 @@ telco-churn-challenge/
 Preparamos o ambiente para ser executado de forma simples, com duas frentes principais: A **API de Previsão (Backend)** e o **Dashboard Interativo (Frontend)**.
 
 ### Pré-requisitos
-Certifique-se de que as dependências do projeto estejam instaladas (geralmente disponíveis no ambiente virtual `.venv`).
+O ambiente vive em `notebooks/.venv`. Requer Python 3.10+.
+```bash
+make install          # ou: notebooks/.venv/bin/pip install -e ".[dev]"
+```
 
 ### Passo 1: Iniciando a API (O Cérebro do Modelo)
 Abra um terminal na pasta raiz do projeto (`telco-churn-challenge`) e execute:
-
 ```bash
-.venv/bin/uvicorn src.api:app --reload
+make run
 ```
+*(Se preferir rodar manualmente: `.venv/bin/uvicorn src.api.app:app --host 0.0.0.0 --port 8000`)*
 
 - **Como testar a API diretamente:** 
-  Abra o seu navegador e acesse: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs). 
-  Você verá uma interface gráfica interativa (Swagger). Para testar:
-  1. Clique no endpoint verde **`POST /predict`**.
-  2. Clique no botão **"Try it out"**.
-  3. Altere os valores no quadro de texto (JSON) para simular um cliente.
-  4. Clique em **"Execute"**. O resultado aparecerá logo abaixo com a probabilidade de cancelamento!
+  Acesse: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs). 
 
 ### Passo 2: Iniciando o Dashboard (A Interface Visual)
-Para uma experiência mais amigável, você pode usar nosso simulador visual.
-Deixe a API rodando no primeiro terminal. Abra **um novo terminal** na mesma pasta raiz do projeto e execute:
-
+Deixe a API rodando no primeiro terminal. Abra **um novo terminal** na pasta raiz e execute:
 ```bash
 .venv/bin/streamlit run src/app.py
 ```
+Acesse [http://localhost:8501](http://localhost:8501) no seu navegador. O Dashboard enviará os dados para a API e exibirá o risco de cancelamento e a latência na tela!
 
-- **Como usar o Dashboard:**
-  O seu navegador abrirá automaticamente na página [http://localhost:8501](http://localhost:8501) (ou um endereço similar exibido no terminal).
-  1. No painel lateral esquerdo, brinque com os valores: aumente os meses de contrato, mude o tipo de internet e ajuste a cobrança mensal.
-  2. Clique no botão azul **"Prever Risco de Churn"**.
-  3. O Dashboard enviará esses dados para a API (que está rodando no Passo 1) e exibirá na tela um velocímetro mostrando exatamente se o cliente está seguro ou prestes a cancelar!
+---
+
+## Comandos Úteis (Para Desenvolvedores)
+
+| Comando | O que faz |
+|---|---|
+| `make train` | Treina Dummy + LogisticRegression + MLP, loga tudo no MLflow e salva o pipeline. |
+| `make run` | Sobe a API (uvicorn) em `localhost:8000`. |
+| `make score` | Roda o scoring em lote sobre o dataset e grava em `data/predictions/`. |
+| `make test` | Roda a suíte de testes (pytest). |
+| `make lint` / `make format` | Verifica / corrige lint e formatação (ruff). |
+
+## MLflow
+Os treinamentos gravam no backend sqlite (`sqlite:///mlflow.db`). Para inspecionar:
+```bash
+notebooks/.venv/bin/mlflow ui --backend-store-uri sqlite:///mlflow.db
+```
+

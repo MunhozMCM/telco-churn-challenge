@@ -22,20 +22,46 @@ with tab1:
     total_charges = st.sidebar.number_input("Cobrança Total Acumulada ($)", min_value=0.0, value=600.0)
 
     contract_type = st.sidebar.selectbox("Tipo de Contrato", ["Mensal (Month-to-month)", "1 Ano (One year)", "2 Anos (Two year)"])
-    contract_one_year = 1 if contract_type == "1 Ano (One year)" else 0
-    contract_two_year = 1 if contract_type == "2 Anos (Two year)" else 0
+    if contract_type == "Mensal (Month-to-month)":
+        contract_mapped = "Month-to-month"
+    elif contract_type == "1 Ano (One year)":
+        contract_mapped = "One year"
+    else:
+        contract_mapped = "Two year"
 
     internet_service = st.sidebar.selectbox("Serviço de Internet", ["DSL", "Fibra Óptica (Fiber optic)", "Nenhum"])
-    fiber_optic = 1 if internet_service == "Fibra Óptica (Fiber optic)" else 0
+    if internet_service == "Fibra Óptica (Fiber optic)":
+        internet_mapped = "Fiber optic"
+    elif internet_service == "DSL":
+        internet_mapped = "DSL"
+    else:
+        internet_mapped = "No"
 
     if st.button("Prever Risco de Churn", type="primary"):
+        # Payload completo conforme exigido pelo novo schema da API na main
         payload = {
-            "tenure": tenure,
-            "MonthlyCharges": monthly_charges,
-            "TotalCharges": total_charges,
-            "Contract_One_year": contract_one_year,
-            "Contract_Two_year": contract_two_year,
-            "InternetService_Fiber_optic": fiber_optic
+            "Zip Code": 90001,
+            "Latitude": 34.0,
+            "Longitude": -118.0,
+            "Tenure Months": tenure,
+            "Monthly Charges": monthly_charges,
+            "CLTV": int(total_charges), # Usando o total charges como proxy para o CLTV exigido ou passando um mock
+            "Gender": "Male",
+            "Senior Citizen": "No",
+            "Partner": "No",
+            "Dependents": "No",
+            "Phone Service": "Yes",
+            "Multiple Lines": "No",
+            "Internet Service": internet_mapped,
+            "Online Security": "No",
+            "Online Backup": "No",
+            "Device Protection": "No",
+            "Tech Support": "No",
+            "Streaming TV": "No",
+            "Streaming Movies": "No",
+            "Contract": contract_mapped,
+            "Paperless Billing": "Yes",
+            "Payment Method": "Electronic check"
         }
         
         with st.spinner("Consultando modelo na API..."):
