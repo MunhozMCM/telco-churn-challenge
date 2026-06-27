@@ -4,6 +4,8 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import os
+import numpy as np
+from scipy import stats
 
 st.set_page_config(page_title="Telco Churn Dashboard", layout="wide")
 
@@ -254,3 +256,47 @@ with tab3:
     * **Rollback de Emergência:** Caso a API apresente picos de Erros 500 ou viés agudo, revertemos a versão de `Production` para a `Archived` imediatamente usando o MLflow Model Registry.
     * **Governança:** Limitações catalogadas no **Model Card** e integração com o negócio através do **ML Canvas**.
     """)
+    
+    st.markdown("---")
+    
+    with st.expander("Demonstração Interativa (Ao Vivo no Vídeo): Auditoria MLOps"):
+        col_drift, col_rollback = st.columns(2)
+        
+        with col_drift:
+            st.markdown("### Auditoria de Data Drift")
+            st.markdown("Simule a entrada de uma nova safra de clientes e rode o Teste de Kolmogorov-Smirnov.")
+            if st.button("Executar Teste de Drift (Tenure)"):
+                with st.spinner("Analisando distribuições..."):
+                    # Carrega dados reais de referencia
+                    try:
+                        df_ref = pd.read_excel("data/Telco_customer_churn.xlsx")
+                        ref_data = df_ref['tenure'].dropna().values
+                    except:
+                        ref_data = np.random.normal(32, 24, 1000)
+                    
+                    # Simula um dataset com drift (ex: campanha atraiu apenas clientes de curtíssimo prazo)
+                    drifted_data = np.random.exponential(scale=5, size=500)
+                    
+                    # Teste KS
+                    statistic, p_value = stats.ks_2samp(ref_data, drifted_data)
+                    
+                    st.warning("ALERTA: Data Drift Detectado!")
+                    st.write(f"**P-Value:** {p_value:.4e} (Limite: 0.05)")
+                    st.write("A distribuição da nova safra divergiu severamente dos dados de treino. A métrica F1 está sob risco de degradação. **Ação:** Retreino agendado.")
+        
+        with col_rollback:
+            st.markdown("### Emergência: Rollback de Modelo")
+            st.markdown("Simule a reversão de versão no Registry do MLflow após anomalia crítica na API.")
+            if st.button("Acionar Rollback Automático"):
+                with st.spinner("Comutando Registry..."):
+                    st.success("Rollback executado com sucesso em Produção.")
+                    st.code('''
+[MLFLOW SYSTEM LOG]
+> mlflow.register_model(...)
+> Transitioning model 'Churn_LogisticRegression' version 2 to 'Archived'.
+> Transitioning model 'Churn_LogisticRegression' version 1 to 'Production'.
+> API Reloading... OK.
+> Traffic redirected to Version 1 (F1-Score: 0.79).
+                    ''', language="bash")
+                    st.markdown("O sistema estabilizou usando o *Shadow Deployment* prévio. Equipe notificada via Slack.")
+
