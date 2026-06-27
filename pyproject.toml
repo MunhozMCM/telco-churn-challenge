@@ -1,7 +1,13 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "telco-churn-challenge"
-version = "0.1.0"
+version = "1.0.0"
 description = "Rede Neural para Previsão de Churn com Pipeline End-to-End"
+readme = "README.md"
+requires-python = ">=3.10"
 dependencies = [
     "pandas",
     "scikit-learn",
@@ -9,17 +15,46 @@ dependencies = [
     "torch",
     "fastapi",
     "uvicorn",
-    "pytest",
-    "ruff",
     "pandera",
-    "seaborn",
     "openpyxl",
-    "matplotlib",
     "joblib",
     "pydantic",
+    "loguru",
+    # analysis / notebook deliverables (Etapas 1-2)
+    "seaborn",
+    "matplotlib",
     "shap",
-    "statsmodels"
+    "statsmodels",
 ]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff", "taskipy", "httpx", "ipykernel", "nbconvert"]
+
+[project.scripts]
+churn-api = "src.api.entry:run"
+churn-score = "src.batch.score:main"
+
+[tool.setuptools.packages.find]
+include = ["src*"]
 
 [tool.ruff]
 line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.taskipy.tasks]
+lint = "ruff check src tests && ruff format --check src tests"
+format = "ruff check --fix src tests && ruff format src tests"
+test = "pytest tests/ -q"
+train = "python -m src.modeling.train"
+run = "python -m src.api.entry"
+score = "python -m src.batch.score data/raw/Telco_customer_churn.xlsx"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
