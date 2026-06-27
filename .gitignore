@@ -6,12 +6,24 @@ venv/
 # Python Cache
 __pycache__/
 *.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+.ipynb_checkpoints/
+
+# WSL/Windows alternate-data-stream cruft
+*:Zone.Identifier
 
 # Data and Models
 /models/
+/data/predictions/
 
 # MLflow tracking
 mlruns/
+mlartifacts/
+mlflow.db
+notebooks/mlflow.db
 
 # Material explicativo Fase 1 pdf
 material-fiap/
