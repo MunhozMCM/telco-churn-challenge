@@ -1,0 +1,12 @@
+[Unit]
+Description=Streamlit Dashboard for Telco Churn
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/telco/telco-churn-challenge
+ExecStart=/home/ubuntu/telco/telco-churn-challenge/.venv/bin/streamlit run src/app.py --server.port 8501 --server.address 0.0.0.0
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

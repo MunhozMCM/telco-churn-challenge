@@ -1,9 +1,0 @@
-pandas
-scikit-learn
-mlflow
-torch
-fastapi
-uvicorn
-pytest
-ruff
-pandera

@@ -15,3 +15,5 @@ mlruns/
 
 # Material explicativo Fase 1 pdf
 material-fiap/
+extracted_pdfs.txt
+/PDFs/*

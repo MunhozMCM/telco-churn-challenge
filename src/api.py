@@ -8,8 +8,25 @@ import torch.nn as nn
 import pandas as pd
 
 # --- 1. SETUP LOGGING ---
+import os
+import json
+from datetime import datetime
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("ChurnAPI")
+
+# Setup JSON structured logging for inference requests
+request_logger = logging.getLogger("request_logger")
+request_logger.setLevel(logging.INFO)
+# Save logs inside models directory or a logs dir
+_log_path = os.getenv("LOG_ENV_VAR", "models/inference_logs.json")
+
+if not request_logger.handlers:
+    fh = logging.FileHandler(_log_path)
+    fh.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(message)s')
+    fh.setFormatter(formatter)
+    request_logger.addHandler(fh)
 
 # --- 2. REBUILD THE PYTORCH ARCHITECTURE ---
 # The API needs to know the shape of the brain before it can load the weights
@@ -61,6 +78,7 @@ async def add_process_time_header(request: Request, call_next):
     response = await call_next(request)
     process_time = time.time() - start_time
     logger.info(f"Path: {request.url.path} | Method: {request.method} | Latency: {process_time:.4f}s")
+    response.headers["X-Process-Time"] = str(process_time)
     return response
 
 # --- 6. ENDPOINTS ---
@@ -96,10 +114,21 @@ def predict_churn(customer: CustomerData):
             output = model(tensor_input)
             probability = torch.sigmoid(output).item()
             
-        return {
+        response_data = {
             "churn_probability": round(probability, 4),
             "risk_level": "High" if probability > 0.5 else "Low"
         }
+        
+        # Logestruturado
+        log_record = {
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "request_payload": input_data,
+            "response_payload": response_data,
+            "status_code": 200
+        }
+        request_logger.info(json.dumps(log_record))
+        
+        return response_data
         
     except Exception as e:
         logger.error(f"Prediction error: {e}")
