@@ -114,4 +114,4 @@ Runs dos notebooks são marcados com a tag `source` para distingui-los dos runs 
 
 ---
 
-## Tech Challenge 1 — Mateus Munhoz (RM375436) · Lucas Munhoz (RM374691)
+## Tech Challenge 1 — Gabriel Figueira (RM374505) · Lucas Munhoz (RM374691) · Mateus Munhoz (RM375436) 
