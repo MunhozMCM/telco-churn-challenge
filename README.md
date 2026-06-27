@@ -1,6 +1,6 @@
 <div align="center">
   
-  # 📉 Telco Churn Prediction Pipeline
+  # Telco Churn Prediction Pipeline
   
   **Pipeline de ML end-to-end para previsão de churn — baselines + Rede Neural (PyTorch), rastreados com MLflow e servidos via batch (Airflow) e API REST (FastAPI).**
   
@@ -66,7 +66,7 @@ telco-churn-challenge/
 
 ---
 
-## 🚀 Como Executar o Projeto (Passo a Passo)
+## Como Executar o Projeto (Passo a Passo)
 
 Preparamos o ambiente para ser executado de forma simples, com duas frentes principais: A **API de Previsão (Backend)** e o **Dashboard Interativo (Frontend)**.
 
@@ -92,6 +92,21 @@ Deixe a API rodando no primeiro terminal. Abra **um novo terminal** na pasta rai
 .venv/bin/streamlit run src/app.py
 ```
 Acesse [http://localhost:8501](http://localhost:8501) no seu navegador. O Dashboard enviará os dados para a API e exibirá o risco de cancelamento e a latência na tela!
+
+---
+
+## 🛠️ Troubleshooting (Solução de Problemas)
+
+### Erro: `{"detail": "Model unavailable"}` no Dashboard ou `/predict`
+Esse erro ocorre porque a API iniciou em **modo degradado**, ou seja, ela ligou mas não encontrou o arquivo físico do modelo pré-treinado (`models/model.joblib`). Isso é comum ao clonar o repositório pela primeira vez (já que os modelos não sobem para o Git).
+
+**Como resolver:**
+Basta treinar os modelos localmente para gerar os artefatos. No terminal, execute:
+```bash
+make train
+# Ou manualmente: .venv/bin/python -m src.modeling.train
+```
+Após o script concluir (ele treinará os baselines e o MLP e salvará o `.joblib`), **reinicie a API** (ou o container) e ela já voltará a responder com as previsões perfeitamente.
 
 ---
 
