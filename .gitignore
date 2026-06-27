@@ -29,3 +29,6 @@ notebooks/mlflow.db
 material-fiap/
 extracted_pdfs.txt
 /PDFs/*
+
+# Material de Apoio (Apresentacao)
+docs/roteiro_*.md
