@@ -4,7 +4,7 @@
 * **Architecture:** Multi-Layer Perceptron (PyTorch) with 2 hidden layers (64 -> 32 neurons) and ReLU activations.
 * **Task:** Binary Classification (Churn vs. Retention).
 * **Optimization:** Adam Optimizer, BCEWithLogitsLoss, trained with Early Stopping (patience=10).
-* **Feature Engineering (Aula 03):** O modelo consome variáveis pré-processadas e escalonadas usando `StandardScaler`. Transformações e encodings categóricos (one-hot) foram realizados para evitar que a magnitude das variáveis contínuas afete o aprendizado da rede.
+* **Feature Engineering:** O modelo consome variáveis pré-processadas e escalonadas usando `StandardScaler`. Transformações e encodings categóricos (one-hot) foram realizados para evitar que a magnitude das variáveis contínuas afete o aprendizado da rede.
 
 ## Intended Use
 * **Primary Use Case:** Identify telecom customers at high risk of canceling their subscriptions so the retention team can offer targeted discounts.
@@ -14,12 +14,12 @@
 * **Primary Optimization Metric:** F1-Score (Equilíbrio ideal entre Recall e Precision, minimizando Falsos Negativos - clientes que dão churn sem alerta).
 * **Business Metric:** Custo de Churn Evitado. 
 * *Note: Final metrics are logged dynamically in MLflow (`mlruns/`).*
-* **Comparação de Algoritmos (Aula 03):** Optou-se por Redes Neurais (MLP) sobre o baseline de Regressão Logística devido ao ganho de acurácia, mesmo havendo perda na interpretabilidade imediata dos pesos.
+* **Comparação de Algoritmos:** Optou-se por Redes Neurais (MLP) sobre o baseline de Regressão Logística devido ao ganho de acurácia, mesmo havendo perda na interpretabilidade imediata dos pesos.
 
 ## Limitations & Biases
 * **Class Imbalance:** The original dataset is heavily skewed towards retained customers (~73%). Despite stratification, the model may inherently lean towards predicting retention.
 * **Historical Bias:** The model assumes that future churn behavior will exactly mirror historical churn behavior. Market shifts (like a new competitor launching) will degrade accuracy.
-* **Trade-off de Interpretabilidade (Aula 03):** Ao contrário de árvores de decisão simples, um MLP funciona como "caixa preta". Não temos uma equação simples para explicar o porquê de um cliente ser classificado como alto risco sem a adoção futura de ferramentas como SHAP.
+* **Trade-off de Interpretabilidade:** Ao contrário de árvores de decisão simples, um MLP funciona como "caixa preta". Não temos uma equação simples para explicar o porquê de um cliente ser classificado como alto risco sem a adoção futura de ferramentas como SHAP.
 
 ## Failure Scenarios
 * **Extreme Outliers:** Customers with abnormal `TotalCharges` due to billing errors will cause unpredictable network outputs.

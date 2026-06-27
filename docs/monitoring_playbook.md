@@ -1,6 +1,6 @@
 # Playbook de Monitoramento e Manutenção
 
-Este playbook descreve o procedimento padrão de MLOps para monitorar e manter a saúde do modelo de previsão de Churn em produção, com base nas diretrizes da **Aula 05**.
+Este playbook descreve o procedimento padrão de MLOps para monitorar e manter a saúde do modelo de previsão de Churn em produção, com base nas melhores práticas do mercado.
 
 ## 1. O que vamos monitorar?
 
@@ -25,7 +25,7 @@ O monitoramento do modelo não se resume apenas a métricas de software. Acompan
 
 ## 2. Ferramentas e Infraestrutura
 
-Para viabilizar este playbook, o projeto utiliza as seguintes tecnologias (referência Aula 05):
+Para viabilizar este playbook, o projeto utiliza as seguintes tecnologias:
 
 1. **Logging em JSON Estruturado (Backend):**
    * A aplicação `api.py` salva cada predição e input no arquivo `models/inference_logs.json`. Este log histórico serve como base de dados primária para análise de drift e depuração.
