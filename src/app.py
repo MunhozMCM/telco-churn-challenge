@@ -11,7 +11,7 @@ st.title("Telco Churn Prediction")
 st.markdown("Bem-vindo ao dashboard de previsão de Churn. Preencha os dados do cliente para analisar o risco ou explore os dados históricos.")
 
 # Create tabs
-tab1, tab2 = st.tabs(["Simulador de Churn", "Análise Histórica (EDA)"])
+tab1, tab2, tab3 = st.tabs(["Simulador de Churn", "Análise Histórica (EDA)", "Arquitetura e Decisões"])
 
 with tab1:
     st.sidebar.header("Dados do Cliente")
@@ -117,6 +117,14 @@ with tab1:
                         fig.update_layout(height=300, margin=dict(l=10, r=10, t=50, b=10))
                         st.plotly_chart(fig, use_container_width=True)
                         
+                    with st.expander("Ver Logs da API (Auditoria / Debug)"):
+                        st.markdown("**Payload Enviado (Request):**")
+                        st.json(payload)
+                        st.markdown("**Resposta Recebida (Response):**")
+                        st.json(result)
+                        st.markdown("**Headers de Resposta:**")
+                        st.json(dict(response.headers))
+                        
                 else:
                     st.error(f"Erro na API: {response.text}")
             except Exception as e:
@@ -187,9 +195,9 @@ with tab2:
                 
                 | Feature | VIF Score | Decisão Arquitetural |
                 |---|---|---|
-                | `TotalCharges` | **> 10.0** | 🚨 **Removido** do Modelo |
-                | `tenure` | 7.5 | ✅ Mantido |
-                | `MonthlyCharges`| 3.4 | ✅ Mantido |
+                | `TotalCharges` | **> 10.0** | [Removido] |
+                | `tenure` | 7.5 | [Mantido] |
+                | `MonthlyCharges`| 3.4 | [Mantido] |
                 
                 **Conclusão:** Manter `TotalCharges` causaria instabilidade matemática nos pesos da Regressão Logística e distorceria as explicações via valores SHAP. Ele foi descartado no pré-processamento.
                 """)
@@ -200,3 +208,38 @@ with tab2:
             
     else:
         st.warning(f"O arquivo {data_path} não foi encontrado. Ele é necessário para exibir os gráficos históricos.")
+
+with tab3:
+    st.header("Decisões Arquiteturais e Modelagem")
+    
+    st.subheader("1. Comparativo de Modelos: PyTorch vs Regressão Logística")
+    st.markdown("""
+    Nós avaliamos diversas abordagens para prever o Churn:
+    * **Dummy Classifier (Baseline):** 73% de acurácia, mas **0% de Recall** (inútil para o negócio).
+    * **Rede Neural (PyTorch):** Arquitetura MLP (64 -> 32 neurônios), função ReLU, Otimizador Adam, e `BCEWithLogitsLoss`. Atingiu **0.85 AUC-ROC e 78% de Recall**.
+    * **Regressão Logística (Produção):** Atingiu **0.85 AUC-ROC e 78% de Recall**.
+    
+    **Decisão:** Optamos pela Regressão Logística por empatar tecnicamente com o PyTorch e garantir 100% de interpretabilidade nativa via SHAP, sem problemas de consumo de memória.
+    """)
+    
+    st.markdown("---")
+    
+    st.subheader("2. Ajuste do Threshold (Limiar de Decisão)")
+    st.markdown("""
+    O limiar padrão de 0.5 estava causando a perda de quase metade dos canceladores (Baixo Recall).
+    
+    * Reduzimos o limiar de **0.5 para 0.3**.
+    * **Justificativa Matemática/Negócios:** O custo financeiro de um 'Falso Negativo' (cliente que cancela sem a empresa tentar reter) é cerca de 10 vezes maior que um 'Falso Positivo' (oferecer desconto para quem ficaria de qualquer forma). Aceitar mais falsos alarmes é, neste contexto, altamente lucrativo.
+    """)
+    
+    st.markdown("---")
+    
+    st.subheader("3. MLOps e Governança de IA")
+    st.markdown("""
+    O projeto não é apenas um notebook. Construímos uma infraestrutura robusta para suportar o ciclo de vida do modelo em produção:
+    
+    * **API FastAPI com Pydantic:** Contratos de dados rígidos no backend, impedindo que inputs inválidos quebrem o modelo.
+    * **Logging Estruturado (Middleware):** Medição de latência (em milissegundos) injetada diretamente no header das requisições e salva em JSON.
+    * **MLflow:** Rastreamento completo de todos os treinamentos e hiperparâmetros, centralizado em banco de dados SQLite.
+    * **Governança:** Model Card documentando limitações técnicas, Playbook de Monitoramento preparado para detecção de Data Drift (Kolmogorov-Smirnov), e ML Canvas alinhando engenharia aos objetivos de negócio.
+    """)
