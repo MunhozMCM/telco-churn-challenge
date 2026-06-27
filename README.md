@@ -62,8 +62,10 @@ telco-churn-challenge/
 ├── Makefile · pyproject.toml
 ```
 
-## Tech Challenge 1 - Mateus Munhoz. RA: RM375436 | Lucas Munhoz. RA: RM374691 | Gabriel Figueira (RM374505)
-
+## Tech Challenge 1 
+Gabriel Figueira (RM374505)
+Lucas Munhoz (RM374691)
+Mateus Munhoz (RM375436)
 ---
 
 ## Como Executar o Projeto (Passo a Passo)
