@@ -234,12 +234,23 @@ with tab3:
     
     st.markdown("---")
     
-    st.subheader("3. MLOps e Governança de IA")
+    st.subheader("3. Engenharia de Software e MLOps")
     st.markdown("""
-    O projeto não é apenas um notebook. Construímos uma infraestrutura robusta para suportar o ciclo de vida do modelo em produção:
+    O diferencial deste projeto é a infraestrutura de produção, garantindo que o modelo seja consumível, resiliente e auditável:
     
-    * **API FastAPI com Pydantic:** Contratos de dados rígidos no backend, impedindo que inputs inválidos quebrem o modelo.
-    * **Logging Estruturado (Middleware):** Medição de latência (em milissegundos) injetada diretamente no header das requisições e salva em JSON.
-    * **MLflow:** Rastreamento completo de todos os treinamentos e hiperparâmetros, centralizado em banco de dados SQLite.
-    * **Governança:** Model Card documentando limitações técnicas, Playbook de Monitoramento preparado para detecção de Data Drift (Kolmogorov-Smirnov), e ML Canvas alinhando engenharia aos objetivos de negócio.
+    * **API FastAPI com Pydantic:** Contratos de dados rígidos no backend. Entradas inválidas são bloqueadas imediatamente, impedindo quedas (*crashes*) por erros de tipagem.
+    * **Logging Estruturado e Latência:** Um *middleware* customizado captura o `X-Process-Time` (latência em ms) e registra o *payload* exato da inferência em JSON para auditoria e *debug*.
+    * **MLflow Tracking e Registry:** Rastreamento total de hiperparâmetros (SQLite) e gestão de versões, garantindo que saibamos exatamente qual modelo está em Produção.
+    """)
+    
+    st.markdown("---")
+    
+    st.subheader("4. Monitoramento Contínuo (Playbook)")
+    st.markdown("""
+    Modelos de IA sofrem degradação. Para mitigar riscos, estabelecemos um **Playbook de Monitoramento**:
+    
+    * **Data Drift (Desvio de Dados):** Monitoramento das distribuições via teste estatístico de **Kolmogorov-Smirnov** (Evidently). Alertas disparam se o perfil do cliente mudar.
+    * **Degradação de Performance:** Retreino obrigatório caso a métrica *F1-Score* caia abaixo de **80%** em novos ciclos de faturamento.
+    * **Rollback de Emergência:** Caso a API apresente picos de Erros 500 ou viés agudo, revertemos a versão de `Production` para a `Archived` imediatamente usando o MLflow Model Registry.
+    * **Governança:** Limitações catalogadas no **Model Card** e integração com o negócio através do **ML Canvas**.
     """)
