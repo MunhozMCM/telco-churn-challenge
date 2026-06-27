@@ -1,53 +1,50 @@
-# 🎬 Roteiro de Vídeo (Método STAR) - Pitch do Projeto Telco Churn
-**Duração Estimada:** 5 Minutos
-**Público-alvo:** Professor / Avaliadores (Foco Técnico e de Negócios)
+# 🎬 Roteiro Detalhado de Apresentação Técnica (Vídeo STAR - 5 Minutos)
+
+**Público-alvo:** Avaliadores do Tech Challenge (Foco profundo na técnica, engenharia e matemática por trás das decisões).
+**Dica para leitura:** Um ritmo normal de fala atinge cerca de 130 a 150 palavras por minuto. Este roteiro tem aproximadamente 700 palavras, perfeito para 5 minutos. Treine lendo em voz alta.
 
 ---
 
-## ⏱️ [0:00 - 1:00] S - Situação (Contexto)
-**Objetivo:** Explicar o problema de negócio e a dor da empresa.
+## ⏱️ [0:00 - 0:45] S - Situação (O Contexto e o Problema)
+*Abra a gravação mostrando o ML Canvas rapidamente e depois mude para o Dashboard Streamlit.*
 
-* **Fala sugerida:** 
-  > "Olá! Nosso projeto aborda um problema crítico para operadoras de telecomunicações: a alta taxa de evasão de clientes, o famoso *Churn*. A perda de um cliente gera um prejuízo enorme em receita recorrente, muito maior do que o custo de oferecer um desconto para tentar retê-lo. Identificamos que atuar reativamente não era suficiente. Nós precisávamos prever quem iria cancelar o plano antes que o cancelamento de fato ocorresse, permitindo que a equipe de retenção atuasse de forma cirúrgica e proativa."
+**Fala sugerida:**
+"Olá a todos. Sou o [Seu Nome] e vou apresentar a solução arquitetada pelo nosso grupo para o desafio de Churn da operadora de telecomunicações.
+O problema de negócios aqui é claro: a evasão de clientes. Na nossa base histórica, cerca de 27% dos clientes cancelaram seus serviços. O custo financeiro de um 'Falso Negativo' — ou seja, o modelo errar e deixar um cliente cancelar sem enviarmos uma oferta — é gigantesco, estimado em quase 10 vezes o custo de uma campanha de retenção (que seria o nosso Falso Positivo). Portanto, o mandato técnico para este pipeline de Machine Learning era claro desde o início: nós precisávamos **otimizar o Recall**, minimizando ao máximo os Falsos Negativos, e entregar isso através de uma arquitetura pronta para produção, escalável e monitorável."
 
-## ⏱️ [1:00 - 1:30] T - Tarefa (O que precisava ser feito)
-**Objetivo:** Mostrar o escopo do projeto.
+## ⏱️ [0:45 - 1:45] T - Tarefa (A Engenharia de Dados e Baseline)
+*Mostre rapidamente a matriz de correlação ou a tabela de VIF (Variance Inflation Factor).*
 
-* **Fala sugerida:**
-  > "A nossa tarefa era construir um pipeline de Machine Learning de ponta a ponta. Não queríamos entregar apenas um Jupyter Notebook estático, mas sim um produto de dados real. Precisávamos de um modelo altamente focado em **Recall**, pois no nosso contexto de negócios, um *Falso Negativo* (deixar um cliente cancelar sem avisar) custa cerca de 10 vezes mais do que um *Falso Positivo* (dar um desconto para alguém que já ia ficar). O objetivo final era servir essa inteligência em uma API robusta e um Dashboard para as áreas de negócio."
+**Fala sugerida:**
+"Para construir essa solução, começamos pela Engenharia de Dados. Usamos o `pandera` para estabelecer um contrato de dados rígido e evitar *Data Drift* logo na entrada. 
+Na análise exploratória, detectamos um problema severo de **Multicolinearidade**. O teste estatístico de *Variance Inflation Factor* (VIF) revelou que a variável `Total Charges` (Cobrança Total) tinha um VIF muito acima de 10 e uma correlação de Pearson de 0.83 com `Tenure Months` (Meses de Contrato). Para evitar que os coeficientes do nosso modelo ficassem instáveis e distorcessem a nossa interpretabilidade, tomamos a decisão técnica de remover `Total Charges`.
 
-## ⏱️ [1:30 - 3:30] A - Ação (O que fizemos e nossas Decisões)
-**Objetivo:** Brilhar tecnicamente, explicar a Rede Neural vs Regressão Logística e justificar todas as escolhas.
+Com o dataset limpo e transformado através de um `ColumnTransformer` do scikit-learn — usando *OneHotEncoding* e *StandardScaler* dentro de um Pipeline unificado para evitar *Data Leakage* — rodamos o nosso baseline: um Dummy Classifier. Ele obteve 73% de acurácia, mas zero de Recall. A acurácia alta era uma ilusão causada pelo desbalanceamento das classes. Precisávamos de modelos reais."
 
-* **Fala sugerida:**
-  > "Para atacar o problema, desenvolvemos todo o pré-processamento de dados e treinamos diferentes arquiteturas rastreando tudo via MLflow.
-  >
-  > **1. A Escolha do Modelo (Rede Neural vs Regressão Logística):**
-  > Desenvolvemos uma Rede Neural Multi-Layer Perceptron (MLP) em PyTorch com duas camadas ocultas usando ativação ReLU e Early Stopping. Além disso, criamos um baseline sólido com Regressão Logística. 
-  > *Nossa Decisão:* Avaliando as métricas de teste, ambos empataram com um AUC-ROC em torno de 0.85 e um Recall de 78%. Optamos por colocar a **Regressão Logística em produção**. Por que? Porque para dados tabulares simples, ela entregou a mesma performance da Rede Neural, mas sendo muito mais leve e, o mais importante: **100% interpretável**.
-  > 
-  > **2. Ajuste do Threshold (Limiar de Decisão):**
-  > Por padrão, modelos usam 0.5 de probabilidade para classificar um Churn. Nós percebemos que isso estava nos fazendo perder quase metade dos canceladores reais. *Nossa Decisão:* Reduzimos o threshold para **0.3**. Assumimos que o custo de perder um cliente é altíssimo, então preferimos aceitar mais Falsos Positivos para garantir que a grande maioria dos potenciais cancelamentos fossem capturados.
-  >
-  > **3. Tratamento de Colinearidade:**
-  > Identificamos via matriz de correlação e teste VIF que a variável *Total Charges* era altamente correlacionada com os meses de contrato (*Tenure*). *Nossa Decisão:* Removemos *Total Charges* para evitar distorções nos coeficientes e nas explicações do modelo, mantendo apenas o tempo de contrato que é um sinal direto de lealdade.
-  >
-  > **4. Engenharia e Deploy:**
-  > Construímos uma API com FastAPI, validada rigorosamente com Pydantic para evitar que dados incorretos quebrem a inferência. Adicionamos um middleware de latência no backend e criamos um Dashboard interativo em Streamlit."
+## ⏱️ [1:45 - 3:30] A - Ação (Modelagem, PyTorch e Otimização do Threshold)
+*Mostre um trecho de código da Rede Neural (PyTorch) ou a UI do MLflow.*
 
-## ⏱️ [3:30 - 5:00] R - Resultado (O que entregamos)
-**Objetivo:** Fechar com chave de ouro mostrando os artefatos de governança e a conclusão.
+**Fala sugerida:**
+"Nós desenvolvemos dois modelos principais e usamos o **MLflow** para rastrear todos os hiperparâmetros, métricas e artefatos, usando um backend SQLite.
 
-* **Fala sugerida:**
-  > "Como resultado, entregamos uma solução completa. Hoje, a área de negócios acessa o Dashboard, insere os dados e tem a resposta de risco com a latência computacional em tempo real na tela.
-  > 
-  > Mais do que código, nós entregamos **Governança de IA**. Documentamos o projeto conforme as melhores práticas de MLOps: criamos um ML Canvas conectando o modelo ao negócio, um Model Card detalhando as limitações da IA, e um Playbook de Monitoramento preparado para tratar cenários futuros.
-  > 
-  > Com essas decisões — desde o ajuste de threshold focado no negócio até a escolha pragmática da Regressão Logística — conseguimos maximizar o retorno financeiro da operadora e criar uma infraestrutura de produção sólida. Muito obrigado!"
+**Primeiro, a Rede Neural Artificial (PyTorch):**
+Construímos um *Multi-Layer Perceptron* (MLP). Nossa arquitetura tinha a camada de entrada baseada nas features escalonadas, passando por duas camadas ocultas, reduzindo de 64 para 32 neurônios. Usamos a função de ativação **ReLU**, com *Dropout* de 0.3 para regularização. Para o otimizador, escolhemos o **Adam** com *learning rate* de 1e-3, e compilamos a perda usando `BCEWithLogitsLoss`, que é numericamente mais estável do que aplicar uma Sigmoid separada antes da *Binary Cross Entropy*. Para evitar *overfitting*, implementamos *Early Stopping* monitorando a perda de validação com paciência de 10 épocas.
 
----
+**A Decisão do Threshold (Limiar):**
+Aqui entra a principal sacada do projeto. Modelos como a Regressão Logística usam um *threshold* padrão de 0.5. Nós notamos que com 0.5, estávamos perdendo 44% dos canceladores reais. Por isso, reduzimos cirurgicamente o nosso *threshold* para **0.3**. Trocamos um pouco de *Precision* por um salto drástico no *Recall*, porque matematicamente provamos que aceitar mais Falsos Positivos saía mais barato para o negócio.
 
-## 💡 Dicas Adicionais para a Gravação:
-1. **Compartilhamento de Tela:** Durante a parte da "Ação/Resultado", deixe o Dashboard em Streamlit rodando na tela.
-2. **Mostre Documentos:** Ao citar a Rede Neural e a Governança, mencione os arquivos de decisões (Decision Logs) ou o Model Card.
-3. **Naturalidade:** Entenda os "porquês" (Threshold 0.3, VIF/Colinearidade, PyTorch vs Sklearn) para falar de forma convicta, demonstrando total domínio do que foi construído.
+**O Empate (MLP vs Regressão Logística):**
+Quando comparamos a Rede Neural com a nossa Regressão Logística, vimos um empate técnico: ambos bateram cerca de 0.85 de AUC-ROC e 78% de Recall no limiar de 0.3. 
+Nossa decisão arquitetural foi: **Colocar a Regressão Logística em produção.** Para dados tabulares com essas características, a Regressão Logística foi igualmente performática, porém muito mais leve de processar e 100% interpretável. Nós conseguimos usar o SHAP (*Shapley Additive exPlanations*) Linear para entender que `Tenure Months` e `Contratos de 2 Anos` eram as features de maior peso na retenção, sem precisar lidar com os estouros de memória que o *DeepExplainer* da Rede Neural estava causando."
+
+## ⏱️ [3:30 - 5:00] R - Resultado (O Produto em Produção e MLOps)
+*Abra o Dashboard Streamlit, faça uma inferência e mostre a latência na tela.*
+
+**Fala sugerida:**
+"O resultado foi um produto totalmente *end-to-end*. 
+Para servir o modelo, criamos uma API REST usando **FastAPI**. Injetamos esquemas do **Pydantic** para validar tipagens estritas em tempo real e criamos um *middleware customizado* que captura a latência de cada requisição, salvando logs estruturados em JSON de forma assíncrona.
+Além da predição em lote (*Batch*) feita por scripts Python (prontos para orquestração no Airflow), nós construímos um frontend em **Streamlit** (este que vocês estão vendo). Ele consome a API e plota a probabilidade de Churn e a velocidade de resposta.
+
+Para finalizar, não esquecemos do Dia 2 do modelo (MLOps). Entregamos um repositório que contém um **Model Card** (detalhando vieses e limitações técnicas) e um **Playbook de Monitoramento**, que estabelece as regras de observabilidade para rastrear *Data Drift* via teste de Kolmogorov-Smirnov.
+
+Construímos mais do que um Jupyter Notebook: entregamos inteligência artificial aplicada, validada estatisticamente, monitorável e, acima de tudo, altamente rentável para o negócio. Muito obrigado!"
