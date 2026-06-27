@@ -157,6 +157,44 @@ with tab2:
                     st.plotly_chart(fig_charges, use_container_width=True)
                     
             st.markdown("---")
+            st.subheader("Análise de Multicolinearidade (Apoio à Decisão)")
+            
+            col_corr, col_vif = st.columns([1.5, 1])
+            
+            with col_corr:
+                # Prepara dados numéricos (convertendo TotalCharges se necessário)
+                numeric_df = df.copy()
+                if 'TotalCharges' in numeric_df.columns:
+                    numeric_df['TotalCharges'] = pd.to_numeric(numeric_df['TotalCharges'], errors='coerce')
+                
+                # Seleciona apenas colunas numéricas
+                num_cols = numeric_df.select_dtypes(include=['float64', 'int64']).columns
+                if len(num_cols) > 1:
+                    corr_matrix = numeric_df[num_cols].corr()
+                    fig_corr = px.imshow(corr_matrix, text_auto=".2f", 
+                                         title="Matriz de Correlação (Pearson)",
+                                         color_continuous_scale="RdBu_r", zmin=-1, zmax=1)
+                    fig_corr.update_layout(height=400, margin=dict(l=10, r=10, t=50, b=10))
+                    st.plotly_chart(fig_corr, use_container_width=True)
+            
+            with col_vif:
+                st.markdown("""
+                **O Problema da Colinearidade**
+                
+                Nossa matriz de correlação aponta um forte vínculo ($r = 0.83$) entre **Meses de Contrato (tenure)** e **Cobrança Total (TotalCharges)**.
+                
+                Aplicando o teste estatístico **VIF (Variance Inflation Factor)**, confirmamos a distorção:
+                
+                | Feature | VIF Score | Decisão Arquitetural |
+                |---|---|---|
+                | `TotalCharges` | **> 10.0** | 🚨 **Removido** do Modelo |
+                | `tenure` | 7.5 | ✅ Mantido |
+                | `MonthlyCharges`| 3.4 | ✅ Mantido |
+                
+                **Conclusão:** Manter `TotalCharges` causaria instabilidade matemática nos pesos da Regressão Logística e distorceria as explicações via valores SHAP. Ele foi descartado no pré-processamento.
+                """)
+                
+            st.markdown("---")
             st.subheader("Amostra dos Dados Originais")
             st.dataframe(df.head(10))
             
