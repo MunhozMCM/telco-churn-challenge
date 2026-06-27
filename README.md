@@ -95,7 +95,7 @@ Acesse [http://localhost:8501](http://localhost:8501) no seu navegador. O Dashbo
 
 ---
 
-## 🛠️ Troubleshooting (Solução de Problemas)
+##  Troubleshooting (Solução de Problemas)
 
 ### Erro: `{"detail": "Model unavailable"}` no Dashboard ou `/predict`
 Esse erro ocorre porque a API iniciou em **modo degradado**, ou seja, ela ligou mas não encontrou o arquivo físico do modelo pré-treinado (`models/model.joblib`). Isso é comum ao clonar o repositório pela primeira vez (já que os modelos não sobem para o Git).

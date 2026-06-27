@@ -5,13 +5,13 @@ import plotly.express as px
 import plotly.graph_objects as go
 import os
 
-st.set_page_config(page_title="Telco Churn Dashboard", page_icon="📉", layout="wide")
+st.set_page_config(page_title="Telco Churn Dashboard", layout="wide")
 
-st.title("📉 Telco Churn Prediction")
+st.title("Telco Churn Prediction")
 st.markdown("Bem-vindo ao dashboard de previsão de Churn. Preencha os dados do cliente para analisar o risco ou explore os dados históricos.")
 
 # Create tabs
-tab1, tab2 = st.tabs(["🚀 Simulador de Churn", "📊 Análise Histórica (EDA)"])
+tab1, tab2 = st.tabs(["Simulador de Churn", "Análise Histórica (EDA)"])
 
 with tab1:
     st.sidebar.header("Dados do Cliente")
@@ -85,12 +85,12 @@ with tab1:
                     
                     with col1:
                         st.metric(label="Nível de Risco", value=risk)
-                        st.metric(label="⏱️ Latência da API", value=f"{latency_ms:.2f} ms")
+                        st.metric(label="Latência da API", value=f"{latency_ms:.2f} ms")
                         
                         if risk == "High":
-                            st.error("⚠️ ALTO RISCO: Sugere-se ação de retenção imediata!")
+                            st.error("ALTO RISCO: Sugere-se ação de retenção imediata!")
                         else:
-                            st.success("✅ BAIXO RISCO: Cliente estável.")
+                            st.success("BAIXO RISCO: Cliente estável.")
                     
                     with col2:
                         # Gráfico de Velocímetro (Gauge) usando Plotly

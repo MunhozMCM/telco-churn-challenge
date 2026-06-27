@@ -59,7 +59,7 @@ Two diagnostics were computed on the numerical features before model training:
 
 | Pair | r |
 |---|---|
-| Tenure Months ↔ Total Charges | **0.83** |
+| Tenure Months  Total Charges | **0.83** |
 
 **Variance Inflation Factor (VIF):**
 
