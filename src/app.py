@@ -259,7 +259,7 @@ with tab3:
     
     st.markdown("---")
     
-    with st.expander("Demonstração Interativa (Ao Vivo no Vídeo): Auditoria MLOps"):
+    with st.expander("Demonstração Interativa: Auditoria MLOps"):
         col_drift, col_rollback = st.columns(2)
         
         with col_drift:
