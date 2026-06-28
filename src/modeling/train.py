@@ -107,10 +107,18 @@ def train() -> dict:
     # --- MLP (tracked, not served) ---
     prep = build_pipeline(LogisticRegression())  # reuse cleaner+preprocessor
     prep = prep[:-1]  # drop the estimator step → just preprocessing
-    X_train_p = prep.fit_transform(X_train)
+    
+    # Internal split for early stopping to avoid test set leakage
+    X_train_inner, X_val_inner, y_train_inner, y_val_inner = train_test_split(
+        X_train, y_train, test_size=0.1, random_state=SEED, stratify=y_train
+    )
+    
+    X_train_p = prep.fit_transform(X_train_inner)
+    X_val_p = prep.transform(X_val_inner)
     X_test_p = prep.transform(X_test)
+    
     mlp_model, mlp_params = train_mlp(
-        X_train_p, y_train.to_numpy(), X_test_p, y_test.to_numpy()
+        X_train_p, y_train_inner.to_numpy(), X_val_p, y_val_inner.to_numpy()
     )
     mlp_prob = predict_proba_mlp(mlp_model, X_test_p)
     mlp_pred = (mlp_prob >= THRESHOLD).astype(int)

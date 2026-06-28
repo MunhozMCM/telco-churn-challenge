@@ -40,9 +40,8 @@ with tab1:
         internet_mapped = "No"
 
     if st.button("Prever Risco de Churn", type="primary"):
-        # Payload completo conforme exigido pelo novo schema da API na main
+        # Payload completo conforme exigido pelo novo schema da API
         payload = {
-            "Zip Code": 90001,
             "Latitude": 34.0,
             "Longitude": -118.0,
             "Tenure Months": tenure,
