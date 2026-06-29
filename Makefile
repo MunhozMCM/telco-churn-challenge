@@ -1,10 +1,12 @@
 .PHONY: install lint format test train run score clean
 
-VENV := notebooks/.venv
+VENV := .venv
 PY := $(VENV)/bin/python
 RUFF := $(VENV)/bin/ruff
 
 install:
+	python3 -m venv $(VENV)
+	$(PY) -m pip install --upgrade pip
 	$(PY) -m pip install -e ".[dev]"
 
 lint:
@@ -29,4 +31,4 @@ score:
 
 clean:
 	rm -rf .pytest_cache .ruff_cache src/*.egg-info
-	find . -type d -name __pycache__ -not -path "./notebooks/.venv/*" -exec rm -rf {} +
+	find . -type d -name __pycache__ -not -path "./.venv/*" -exec rm -rf {} +

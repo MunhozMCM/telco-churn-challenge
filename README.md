@@ -73,9 +73,9 @@ Mateus Munhoz (RM375436)
 Preparamos o ambiente para ser executado de forma simples, com duas frentes principais: A **API de Previsão (Backend)** e o **Dashboard Interativo (Frontend)**.
 
 ### Pré-requisitos
-O ambiente vive em `notebooks/.venv`. Requer Python 3.10+.
+O ambiente vive em `.venv`. Requer Python 3.10+.
 ```bash
-make install          # ou: notebooks/.venv/bin/pip install -e ".[dev]"
+make install          # ou manualmente: python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
 ```
 
 ### Passo 1: Iniciando a API (O Cérebro do Modelo)
@@ -91,7 +91,7 @@ make run
 ### Passo 2: Iniciando o Dashboard (A Interface Visual)
 Deixe a API rodando no primeiro terminal. Abra **um novo terminal** na pasta raiz e execute:
 ```bash
-.venv/bin/streamlit run src/app.py
+.venv/bin/streamlit run dashboard/app.py
 ```
 Acesse [http://localhost:8501](http://localhost:8501) no seu navegador. O Dashboard enviará os dados para a API e exibirá o risco de cancelamento e a latência na tela!
 
@@ -125,6 +125,6 @@ Após o script concluir (ele treinará os baselines e o MLP e salvará o `.jobli
 ## MLflow
 Os treinamentos gravam no backend sqlite (`sqlite:///mlflow.db`). Para inspecionar:
 ```bash
-notebooks/.venv/bin/mlflow ui --backend-store-uri sqlite:///mlflow.db
+.venv/bin/mlflow ui --backend-store-uri sqlite:///mlflow.db
 ```
 
