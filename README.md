@@ -152,6 +152,13 @@ make train
 ```
 Após o script concluir (ele treinará os baselines e o MLP e salvará o `.joblib`), **reinicie a API** (ou o container) e ela já voltará a responder com as previsões perfeitamente.
 
+### Erro: `WinError 126` ou `ImportError` do PyTorch no Windows
+Caso você esteja rodando o projeto num Windows recém-instalado ou numa Máquina Virtual sem a biblioteca **Microsoft Visual C++ Redistributable** instalada, as DLLs da biblioteca PyTorch falharão ao carregar na hora de treinar os modelos.
+
+**Como resolver:**
+- **Solução Definitiva:** Faça o download e a instalação do [Microsoft Visual C++ Redistributable (X64)](https://aka.ms/vs/17/release/vc_redist.x64.exe).
+- **Workaround Automático:** O nosso código já identifica essa falha nativa do Windows e **pula o treino da Rede Neural (PyTorch)**, prosseguindo com o treino do modelo oficial de produção (Regressão Logística) sem quebrar o sistema. Você verá apenas um `WARNING` no log e tudo funcionará normalmente.
+
 ---
 
 ## Comandos Úteis (Para Desenvolvedores)
