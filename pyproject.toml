@@ -28,6 +28,8 @@ dependencies = [
     "streamlit",
     "plotly",
     "requests",
+    "numpy",
+    "scipy",
 ]
 
 [project.optional-dependencies]
