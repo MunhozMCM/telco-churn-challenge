@@ -43,6 +43,15 @@ try:
 except (ImportError, OSError) as e:
     logger.warning("PyTorch not found or failed to load ({}). MLP training will be skipped.", e)
     HAS_TORCH = False
+    
+    # Workaround: Se o PyTorch estiver quebrado no Windows (WinError 126), 
+    # bibliotecas como skops/scipy/sklearn crashem ao tentar importar 'torch' implicitamente.
+    # Criamos um mock vazio para blindar o ambiente.
+    import sys
+    from types import ModuleType
+    mock_torch = ModuleType("torch")
+    mock_torch.Tensor = type("Tensor", (), {})
+    sys.modules["torch"] = mock_torch
 from src.modeling.pipeline import build_pipeline
 from src.version import MODEL_VERSION
 
