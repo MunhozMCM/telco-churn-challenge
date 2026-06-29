@@ -73,9 +73,26 @@ Mateus Munhoz (RM375436)
 Preparamos o ambiente para ser executado de forma simples, com duas frentes principais: A **API de Previsão (Backend)** e o **Dashboard Interativo (Frontend)**.
 
 ### Pré-requisitos
-O ambiente vive em `.venv`. Requer Python 3.10+.
+O projeto utiliza um ambiente virtual (`.venv`). Requer Python 3.10+.
+
+**Opção 1: Instalação via Make (Apenas Linux/Mac)**
 ```bash
-make install          # ou manualmente: python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
+make install
+```
+
+**Opção 2: Instalação Manual (Recomendada para Windows)**
+No Windows (PowerShell ou CMD):
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -e ".[dev]"
+```
+
+No Linux / Mac (Terminal):
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
 ```
 
 ### Passo 1: Iniciando a API (O Cérebro do Modelo)
