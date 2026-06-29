@@ -115,7 +115,7 @@ make run
 
 **Opção 2: Comando Universal (Qualquer SO)**
 ```bash
-uvicorn src.api.app:app --host 0.0.0.0 --port 8000
+python -m uvicorn src.api.app:app --host 0.0.0.0 --port 8000
 ```
 
 - **Como testar a API diretamente:** 
@@ -133,7 +133,7 @@ Em seguida, execute o dashboard:
 
 **Opção 2: Comando Universal (Qualquer SO)**
 ```bash
-streamlit run dashboard/app.py
+python -m streamlit run dashboard/app.py
 ```
 Acesse [http://localhost:8501](http://localhost:8501) no seu navegador. O Dashboard enviará os dados para a API e exibirá o risco de cancelamento e a latência na tela!
 
@@ -167,6 +167,6 @@ Após o script concluir (ele treinará os baselines e o MLP e salvará o `.jobli
 ## MLflow
 Os treinamentos gravam no backend sqlite (`sqlite:///mlflow.db`). Para inspecionar, com o `.venv` ativado, execute:
 ```bash
-mlflow ui --backend-store-uri sqlite:///mlflow.db
+python -m mlflow ui --backend-store-uri sqlite:///mlflow.db
 ```
 
