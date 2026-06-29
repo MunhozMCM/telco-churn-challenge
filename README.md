@@ -17,6 +17,14 @@
 
 ---
 
+## 🌐 Ambiente de Demonstração (Live)
+
+Para facilitar a avaliação, o projeto já se encontra em produção e pode ser testado diretamente na nuvem:
+- **Dashboard Interativo (Frontend):** [http://dashboard.lucasmunhoz.dev.br](http://dashboard.lucasmunhoz.dev.br)
+- **API FastAPI (Backend / Docs):** [http://api.lucasmunhoz.dev.br/docs](http://api.lucasmunhoz.dev.br/docs)
+
+---
+
 ## O Business Case
 
 Uma operadora de telecomunicações está perdendo clientes em ritmo acelerado. Este projeto entrega um **modelo preditivo end-to-end** que classifica clientes com risco iminente de cancelamento (Churn), permitindo ações de retenção proativas e direcionadas.
