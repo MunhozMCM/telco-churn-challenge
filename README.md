@@ -122,7 +122,11 @@ uvicorn src.api.app:app --host 0.0.0.0 --port 8000
   Acesse: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs). 
 
 ### Passo 2: Iniciando o Dashboard (A Interface Visual)
-Deixe a API rodando no primeiro terminal. Abra **um novo terminal** na pasta raiz, **ative o `.venv` novamente**, e execute:
+Deixe a API rodando no primeiro terminal. Abra **um novo terminal** na pasta raiz e **ative o `.venv` novamente**:
+- No Windows: `.venv\Scripts\activate`
+- No Linux/Mac: `source .venv/bin/activate`
+
+Em seguida, execute o dashboard:
 
 **Opção 1: Via Make (Linux/Mac)**
 *(Não há atalho no make, use o comando universal abaixo)*
