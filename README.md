@@ -17,7 +17,7 @@
 
 ---
 
-## 🌐 Ambiente de Demonstração (Live)
+##  Ambiente de Demonstração (Live)
 
 Para facilitar a avaliação, o projeto já se encontra em produção e pode ser testado diretamente na nuvem:
 - **Dashboard Interativo (Frontend):** [http://dashboard.lucasmunhoz.dev.br](http://dashboard.lucasmunhoz.dev.br)
