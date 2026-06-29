@@ -133,7 +133,7 @@ with tab1:
 
 with tab2:
     st.header("Exploração de Dados Históricos")
-    data_path = "data/Telco_customer_churn.xlsx"
+    data_path = "data/raw/Telco_customer_churn.xlsx"
     
     if os.path.exists(data_path):
         # Load dataset com cache para performance
@@ -268,7 +268,7 @@ with tab3:
                 with st.spinner("Analisando distribuições..."):
                     # Carrega dados reais de referencia
                     try:
-                        df_ref = pd.read_excel("data/Telco_customer_churn.xlsx")
+                        df_ref = pd.read_excel("data/raw/Telco_customer_churn.xlsx")
                         ref_data = df_ref['tenure'].dropna().values
                     except:
                         ref_data = np.random.normal(32, 24, 1000)

@@ -18,6 +18,7 @@ build/
 # Data and Models
 /models/
 /data/predictions/
+*.xlsx
 
 # MLflow tracking
 mlruns/
