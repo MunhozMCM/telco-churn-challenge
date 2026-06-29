@@ -25,6 +25,7 @@ dependencies = [
     "matplotlib",
     "shap",
     "statsmodels",
+    "streamlit",
 ]
 
 [project.optional-dependencies]
