@@ -106,19 +106,30 @@ pip install -e ".[dev]"
 ```
 
 ### Passo 1: Iniciando a API (O Cérebro do Modelo)
-Abra um terminal na pasta raiz do projeto (`telco-churn-challenge`) e execute:
+Abra um terminal, **certifique-se de que o ambiente virtual (`.venv`) está ativado**, e execute na pasta raiz:
+
+**Opção 1: Via Make (Linux/Mac)**
 ```bash
 make run
 ```
-*(Se preferir rodar manualmente: `.venv/bin/uvicorn src.api.app:app --host 0.0.0.0 --port 8000`)*
+
+**Opção 2: Comando Universal (Qualquer SO)**
+```bash
+uvicorn src.api.app:app --host 0.0.0.0 --port 8000
+```
 
 - **Como testar a API diretamente:** 
   Acesse: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs). 
 
 ### Passo 2: Iniciando o Dashboard (A Interface Visual)
-Deixe a API rodando no primeiro terminal. Abra **um novo terminal** na pasta raiz e execute:
+Deixe a API rodando no primeiro terminal. Abra **um novo terminal** na pasta raiz, **ative o `.venv` novamente**, e execute:
+
+**Opção 1: Via Make (Linux/Mac)**
+*(Não há atalho no make, use o comando universal abaixo)*
+
+**Opção 2: Comando Universal (Qualquer SO)**
 ```bash
-.venv/bin/streamlit run dashboard/app.py
+streamlit run dashboard/app.py
 ```
 Acesse [http://localhost:8501](http://localhost:8501) no seu navegador. O Dashboard enviará os dados para a API e exibirá o risco de cancelamento e a latência na tela!
 
@@ -130,10 +141,10 @@ Acesse [http://localhost:8501](http://localhost:8501) no seu navegador. O Dashbo
 Esse erro ocorre porque a API iniciou em **modo degradado**, ou seja, ela ligou mas não encontrou o arquivo físico do modelo pré-treinado (`models/model.joblib`). Isso é comum ao clonar o repositório pela primeira vez (já que os modelos não sobem para o Git).
 
 **Como resolver:**
-Basta treinar os modelos localmente para gerar os artefatos. No terminal, execute:
+Basta treinar os modelos localmente para gerar os artefatos. No terminal (com `.venv` ativado), execute:
 ```bash
 make train
-# Ou manualmente: .venv/bin/python -m src.modeling.train
+# Ou Comando Universal (Windows/Mac/Linux): python -m src.modeling.train
 ```
 Após o script concluir (ele treinará os baselines e o MLP e salvará o `.joblib`), **reinicie a API** (ou o container) e ela já voltará a responder com as previsões perfeitamente.
 
@@ -150,8 +161,8 @@ Após o script concluir (ele treinará os baselines e o MLP e salvará o `.jobli
 | `make lint` / `make format` | Verifica / corrige lint e formatação (ruff). |
 
 ## MLflow
-Os treinamentos gravam no backend sqlite (`sqlite:///mlflow.db`). Para inspecionar:
+Os treinamentos gravam no backend sqlite (`sqlite:///mlflow.db`). Para inspecionar, com o `.venv` ativado, execute:
 ```bash
-.venv/bin/mlflow ui --backend-store-uri sqlite:///mlflow.db
+mlflow ui --backend-store-uri sqlite:///mlflow.db
 ```
 
