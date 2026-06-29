@@ -54,7 +54,11 @@ def _log_run(run_name, params, metrics, *, tags, sklearn_model=None):
         mlflow.log_params(params)
         mlflow.log_metrics(metrics)
         if sklearn_model is not None:
-            mlflow.sklearn.log_model(sklearn_model, name="model")
+            mlflow.sklearn.log_model(
+    sklearn_model,
+    name="model",
+    skops_trusted_types=["src.modeling.preprocessing.TelcoRawCleaner"]
+)
     logger.info("logged MLflow run '{}' | metrics={}", run_name, metrics)
 
 
