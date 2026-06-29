@@ -10,10 +10,10 @@ from src.modeling.preprocessing import TelcoRawCleaner
 
 def test_coerces_numeric_strings_to_numbers():
     df = pd.DataFrame(
-        {"Zip Code": ["90001", "90002"], "Monthly Charges": ["50.5", "60"]}
+        {"Latitude": ["34.0", "35.0"], "Monthly Charges": ["50.5", "60"]}
     )
     out = TelcoRawCleaner().transform(df)
-    assert pd.api.types.is_numeric_dtype(out["Zip Code"])
+    assert pd.api.types.is_numeric_dtype(out["Latitude"])
     assert out["Monthly Charges"].tolist() == [50.5, 60.0]
 
 
@@ -27,7 +27,7 @@ def test_strips_categorical_whitespace():
 
 
 def test_does_not_mutate_input():
-    df = pd.DataFrame({"Zip Code": ["90001"]})
+    df = pd.DataFrame({"Latitude": ["34.0"]})
     original = df.copy()
     TelcoRawCleaner().transform(df)
     pd.testing.assert_frame_equal(df, original)

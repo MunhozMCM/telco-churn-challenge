@@ -13,7 +13,6 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from src.config import NUMERIC_RANGES
 
-_zip = NUMERIC_RANGES["Zip Code"]
 _lat = NUMERIC_RANGES["Latitude"]
 _lon = NUMERIC_RANGES["Longitude"]
 _tenure = NUMERIC_RANGES["Tenure Months"]
@@ -31,7 +30,6 @@ class CustomerData(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
 
     # Numeric features
-    zip_code: int = Field(..., ge=_zip[0], le=_zip[1], alias="Zip Code")
     latitude: float = Field(..., ge=_lat[0], le=_lat[1], alias="Latitude")
     longitude: float = Field(..., ge=_lon[0], le=_lon[1], alias="Longitude")
     tenure_months: int = Field(..., ge=_tenure[0], le=_tenure[1], alias="Tenure Months")

@@ -39,13 +39,11 @@ Missing a churner is more costly than wasting a retention offer. Therefore, **hi
 
 ### Chosen threshold: 0.3
 
-A threshold of 0.3 was selected to meaningfully improve recall while keeping precision at an operationally acceptable level. This means any customer whose predicted churn probability exceeds 30% is flagged for a retention action.
+Based on the estimated costs (`COST_FN = 500`, `COST_FP = 50`), the cost ratio is 10:1. Theoretically, the optimal threshold that minimizes the expected financial cost would be `~0.09` (`50 / (50 + 500)`).
 
-This value should be revisited once the business can quantify:
-- Average revenue lost per churned customer (cost of false negative)
-- Average cost of a retention campaign per customer (cost of false positive)
+However, such a low threshold would flag the vast majority of the customer base as likely to churn, generating a volume of false positives that would **make the real operation of the retention team unfeasible** (due to budget and capacity constraints).
 
-A full precision-recall curve analysis can be used to find the optimal threshold once those values are available.
+Therefore, a threshold of **0.3** was selected to reconcile theoretical mathematics with business practicality: it abandons the default metric (0.5), aggressively prioritizes Recall toward the theoretical optimum, but maintains Precision at an operationally viable level.
 
 ---
 
@@ -59,7 +57,7 @@ Two diagnostics were computed on the numerical features before model training:
 
 | Pair | r |
 |---|---|
-| Tenure Months ↔ Total Charges | **0.83** |
+| Tenure Months  Total Charges | **0.83** |
 
 **Variance Inflation Factor (VIF):**
 
@@ -76,9 +74,8 @@ VIF > 10 is the standard statistical threshold indicating that a feature's varia
 
 Total Charges is largely a function of `Tenure Months × Monthly Charges`. Including it alongside Tenure Months creates redundant information in the feature space. For logistic regression this causes:
 
-- Unstable and counterintuitive coefficients (visible in the SHAP beeswarm: Total Charges had a positive SHAP value suggesting high charges → more churn, which contradicts Tenure Months)
 - Inflated standard errors on both correlated features
-- Distorted SHAP attributions — the model arbitrarily splits credit between the two correlated features
+- Generalized instability in the calculated coefficients
 
 ### Decision
 
@@ -112,7 +109,6 @@ After dropping Total Charges, the collinearity distortion was resolved and the S
 |---|---|---|
 | CLTV | 0.014 | Predicted lifetime value adds almost no signal beyond what tenure and charges already capture. |
 | Gender_Male | 0.009 | Gender is not a meaningful churn predictor in this dataset. |
-| Zip Code | 0.007 | Numeric zip code treated as continuous — ordering is meaningless. No real geographic signal extracted. |
 | Online Backup_Yes | 0.007 | Effectively no contribution. |
 
 ### Key business takeaways

@@ -1,0 +1,44 @@
+================================================
+           MACHINE LEARNING CANVAS
+      Projeto: Detecção de Churn (Telco)
+================================================
+
+1. PROPOSTA DE VALOR (Value Proposition)
+- Problema: A operadora está perdendo clientes (Churn) em ritmo acelerado, causando grande impacto financeiro (perda de LTV - Life Time Value).
+- Solução: Um modelo preditivo end-to-end que classifica clientes atuais com risco de cancelamento, permitindo que a equipe de retenção aja proativamente com ofertas direcionadas.
+
+2. DECISÕES E SAÍDAS (Decisions / Output)
+- O que o modelo prevê? A probabilidade (0 a 100%) de um cliente cancelar o serviço (Churn = Yes) no próximo ciclo.
+- Como a saída é consumida? Um sistema ou equipe de CRM consulta a API e, se a probabilidade for maior que 50% (High Risk), engatilha um fluxo de retenção.
+
+3. FONTES DE DADOS (Data Sources)
+- Origem: Dataset "IBM Telco Customer Churn".
+- Dados históricos: ~7.043 registros de clientes, com histórico de uso, tipo de serviço e informações de faturamento.
+
+4. CARACTERÍSTICAS (Features)
+- Demográficas: Sexo, Se possui parceiro(a), Dependentes, Idade/Senioridade.
+- Serviços Contratados: Tipo de internet (Fibra, DSL), Segurança Online, Streaming, Múltiplas Linhas.
+- Faturamento e Contrato: Tenure (meses de contrato), Valor da cobrança mensal (MonthlyCharges), Cobrança total acumulada (TotalCharges), Tipo de contrato (Mensal, Anual, 2 Anos).
+- Feature Engineering: Escalonamento (StandardScaler) e codificação (One-Hot Encoding) para alimentar a Rede Neural (MLP).
+
+5. FAZENDO PREDIÇÕES (Making Predictions)
+- Integração: A predição ocorre em tempo real (Real-Time Inference).
+- Arquitetura: Requisição HTTP POST para uma REST API desenvolvida em FastAPI. O payload recebe os dados do cliente e a API retorna o "risk_level" e a "churn_probability".
+
+6. AVALIAÇÃO OFFLINE (Offline Evaluation / Métricas Técnicas)
+- Métrica Principal: F1-Score (busca o melhor equilíbrio entre Recall e Precision).
+- Outras métricas monitoradas: Acurácia, AUC-ROC e Precision.
+- Ferramenta de tracking: Validação cruzada com registro dos experimentos e parâmetros via MLflow.
+
+7. AVALIAÇÃO ONLINE (Online Evaluation / Métricas de Negócio)
+- Métrica de Sucesso: Custo de Churn Evitado ($) e Retenção Efetiva (% de clientes que aceitaram a oferta e ficaram).
+- Monitoramento: Comparação contínua entre a predição da API e a manutenção real do contrato do cliente nos meses seguintes (Model Drift).
+
+8. IMPACTO DOS ERROS (Cost of Mistakes)
+- Falso Positivo (Prevê Churn, mas o cliente ia ficar): A empresa gasta oferecendo desconto para um cliente que não iria sair. Reduz a margem de lucro.
+- Falso Negativo (Prevê Retenção, mas o cliente cancela): O cliente vai embora sem nenhuma tentativa de retenção. Perda de toda a receita futura (custo altíssimo).
+- Conclusão: O modelo deve priorizar o Recall (minimizar Falsos Negativos), pois perder o cliente é mais caro do que oferecer um desconto desnecessário.
+
+9. RESTRIÇÕES E LIMITAÇÕES (Constraints)
+- Viés Histórico: O modelo assume que o comportamento futuro de cancelamento refletirá o passado.
+- Explicabilidade: O modelo escolhido é uma Rede Neural (MLP), agindo como "caixa-preta". Difícil justificar matematicamente para o cliente ou auditoria o motivo exato de ele ser considerado alto risco, ao contrário de uma simples regressão.

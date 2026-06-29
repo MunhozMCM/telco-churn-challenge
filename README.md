@@ -1,6 +1,6 @@
 <div align="center">
   
-  # 📉 Telco Churn Prediction Pipeline
+  # Telco Churn Prediction Pipeline
   
   **Pipeline de ML end-to-end para previsão de churn — baselines + Rede Neural (PyTorch), rastreados com MLflow e servidos via batch (Airflow) e API REST (FastAPI).**
   
@@ -62,56 +62,69 @@ telco-churn-challenge/
 ├── Makefile · pyproject.toml
 ```
 
+## Tech Challenge 1 
+Gabriel Figueira (RM374505)
+Lucas Munhoz (RM374691)
+Mateus Munhoz (RM375436)
 ---
 
-## Setup
+## Como Executar o Projeto (Passo a Passo)
 
-Requer Python 3.10+. O ambiente vive em `notebooks/.venv`.
+Preparamos o ambiente para ser executado de forma simples, com duas frentes principais: A **API de Previsão (Backend)** e o **Dashboard Interativo (Frontend)**.
 
+### Pré-requisitos
+O ambiente vive em `notebooks/.venv`. Requer Python 3.10+.
 ```bash
 make install          # ou: notebooks/.venv/bin/pip install -e ".[dev]"
 ```
 
-## Comandos
+### Passo 1: Iniciando a API (O Cérebro do Modelo)
+Abra um terminal na pasta raiz do projeto (`telco-churn-challenge`) e execute:
+```bash
+make run
+```
+*(Se preferir rodar manualmente: `.venv/bin/uvicorn src.api.app:app --host 0.0.0.0 --port 8000`)*
+
+- **Como testar a API diretamente:** 
+  Acesse: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs). 
+
+### Passo 2: Iniciando o Dashboard (A Interface Visual)
+Deixe a API rodando no primeiro terminal. Abra **um novo terminal** na pasta raiz e execute:
+```bash
+.venv/bin/streamlit run src/app.py
+```
+Acesse [http://localhost:8501](http://localhost:8501) no seu navegador. O Dashboard enviará os dados para a API e exibirá o risco de cancelamento e a latência na tela!
+
+---
+
+##  Troubleshooting (Solução de Problemas)
+
+### Erro: `{"detail": "Model unavailable"}` no Dashboard ou `/predict`
+Esse erro ocorre porque a API iniciou em **modo degradado**, ou seja, ela ligou mas não encontrou o arquivo físico do modelo pré-treinado (`models/model.joblib`). Isso é comum ao clonar o repositório pela primeira vez (já que os modelos não sobem para o Git).
+
+**Como resolver:**
+Basta treinar os modelos localmente para gerar os artefatos. No terminal, execute:
+```bash
+make train
+# Ou manualmente: .venv/bin/python -m src.modeling.train
+```
+Após o script concluir (ele treinará os baselines e o MLP e salvará o `.joblib`), **reinicie a API** (ou o container) e ela já voltará a responder com as previsões perfeitamente.
+
+---
+
+## Comandos Úteis (Para Desenvolvedores)
 
 | Comando | O que faz |
 |---|---|
-| `make train` | Treina Dummy + LogisticRegression + MLP, loga tudo no MLflow e salva `models/model.joblib` + `meta.json`. |
-| `make run` | Sobe a API (uvicorn) em `localhost:8000` (`/docs` para o Swagger). |
+| `make train` | Treina Dummy + LogisticRegression + MLP, loga tudo no MLflow e salva o pipeline. |
+| `make run` | Sobe a API (uvicorn) em `localhost:8000`. |
 | `make score` | Roda o scoring em lote sobre o dataset e grava em `data/predictions/`. |
 | `make test` | Roda a suíte de testes (pytest). |
 | `make lint` / `make format` | Verifica / corrige lint e formatação (ruff). |
 
-> Sem `make`? Os mesmos atalhos existem via taskipy: `task train`, `task run`, `task test`… (com o venv ativado). E sempre dá para chamar direto: `notebooks/.venv/bin/python -m src.modeling.train`.
-
-## Exemplo — API
-
-```bash
-make run
-curl localhost:8000/health
-curl -X POST localhost:8000/predict -H "Content-Type: application/json" -d '{
-  "Zip Code": 90003, "Latitude": 33.96, "Longitude": -118.27,
-  "Tenure Months": 2, "Monthly Charges": 53.85, "CLTV": 3239,
-  "Gender": "Male", "Senior Citizen": "No", "Partner": "No", "Dependents": "No",
-  "Phone Service": "Yes", "Multiple Lines": "No", "Internet Service": "DSL",
-  "Online Security": "No", "Online Backup": "Yes", "Device Protection": "No",
-  "Tech Support": "No", "Streaming TV": "No", "Streaming Movies": "No",
-  "Contract": "Month-to-month", "Paperless Billing": "Yes", "Payment Method": "Mailed check"
-}'
-# → {"churn_probability": 0.4378, "churn_flag": 1, "risk_level": "High", "threshold": 0.3}
-```
-
 ## MLflow
-
-`make train` e a execução dos notebooks gravam no mesmo backend sqlite
-(`sqlite:///mlflow.db`, experimento `telco-churn`). Para inspecionar:
-
+Os treinamentos gravam no backend sqlite (`sqlite:///mlflow.db`). Para inspecionar:
 ```bash
 notebooks/.venv/bin/mlflow ui --backend-store-uri sqlite:///mlflow.db
 ```
 
-Runs dos notebooks são marcados com a tag `source` para distingui-los dos runs de `src/modeling/train.py`.
-
----
-
-## Tech Challenge 1 — Gabriel Figueira (RM374505) · Lucas Munhoz (RM374691) · Mateus Munhoz (RM375436) 

@@ -44,7 +44,6 @@ def telco_sample() -> pd.DataFrame:
 def valid_payload() -> dict:
     """A valid /predict request body keyed by the real column names (aliases)."""
     return {
-        "Zip Code": 90003,
         "Latitude": 33.96,
         "Longitude": -118.27,
         "Tenure Months": 12,

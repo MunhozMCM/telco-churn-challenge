@@ -18,6 +18,7 @@ build/
 # Data and Models
 /models/
 /data/predictions/
+*.xlsx
 
 # MLflow tracking
 mlruns/
@@ -27,3 +28,8 @@ notebooks/mlflow.db
 
 # Material explicativo Fase 1 pdf
 material-fiap/
+extracted_pdfs.txt
+/PDFs/*
+
+# Material de Apoio (Apresentacao)
+docs/roteiro_*.md

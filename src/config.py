@@ -28,7 +28,6 @@ ID_COLUMN = "CustomerID"
 # (notebooks/ML_experiments.ipynb). Total Charges is excluded for
 # multicollinearity (r=0.83 / VIF>10 with Tenure Months).
 NUMERIC_FEATURES = (
-    "Zip Code",
     "Latitude",
     "Longitude",
     "Tenure Months",
@@ -83,7 +82,6 @@ CATEGORY_LEVELS = {
 
 # Plausible numeric ranges (California Telco data, with headroom).
 NUMERIC_RANGES = {
-    "Zip Code": (90000, 96200),
     "Latitude": (32.0, 42.5),
     "Longitude": (-125.0, -114.0),
     "Tenure Months": (0, 100),
