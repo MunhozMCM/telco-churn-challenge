@@ -172,3 +172,7 @@ Os treinamentos gravam no backend sqlite (`sqlite:///mlflow.db`). Para inspecion
 ```bash
 python -m mlflow ui --backend-store-uri sqlite:///mlflow.db
 ```
+## Apresentação do Projeto
+<a href="https://youtu.be/4sIrkqv77cw" target="_blank">
+  <img src="https://img.youtube.com/vi/4sIrkqv77cw/maxresdefault.jpg" alt="Demonstração do Projeto" style="width:100%;">
+</a>
