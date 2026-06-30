@@ -1,6 +1,6 @@
 <div align="center">
   
-  # Telco Churn Prediction Pipeline
+  # Telco Churn Prediction Pipeline - FIAP Tech Challenge 01
   
   **Pipeline de ML end-to-end para previsão de churn — baselines + Rede Neural (PyTorch), rastreados com MLflow e servidos via batch (Airflow) e API REST (FastAPI).**
   
@@ -14,6 +14,8 @@
 
   <sub>Versão do modelo: <code>1.0.0</code> · ver <a href="src/version.py"><code>src/version.py</code></a></sub>
 </div>
+
+#### <center> Gabriel Figueira (RM374505) • Lucas Munhoz (RM374691) • Mateus Munhoz (RM375436)</center>
 
 ---
 
@@ -69,12 +71,6 @@ telco-churn-challenge/
 ├── tests/                 # unit · schema · smoke · api
 ├── Makefile · pyproject.toml
 ```
-
-## Tech Challenge 1 
-Gabriel Figueira (RM374505)
-Lucas Munhoz (RM374691)
-Mateus Munhoz (RM375436)
----
 
 ## Como Executar o Projeto (Passo a Passo)
 
@@ -176,4 +172,3 @@ Os treinamentos gravam no backend sqlite (`sqlite:///mlflow.db`). Para inspecion
 ```bash
 python -m mlflow ui --backend-store-uri sqlite:///mlflow.db
 ```
-
