@@ -15,7 +15,7 @@
   <sub>Versão do modelo: <code>1.0.0</code> · ver <a href="src/version.py"><code>src/version.py</code></a></sub>
 </div>
 
-#### <center> Gabriel Figueira (RM374505) • Lucas Munhoz (RM374691) • Mateus Munhoz (RM375436)</center>
+<h4 align="center">Gabriel Figueira (RM374505) • Lucas Munhoz (RM374691) • Mateus Munhoz (RM375436)</h4>
 
 ---
 
